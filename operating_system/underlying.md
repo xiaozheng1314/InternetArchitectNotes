@@ -60,15 +60,15 @@ https://www.bilibili.com/video/av47388949?p=2
 
 ### CPU的基本组成
 
-**PC（Program Counter）**： 程序计数器，记录当前的指令地址
+PC（Program Counter）： 程序计数器，记录当前的指令地址**
 
-**Registers** ：暂时存储CPU计算需要用到的数据
+Registers ：暂时存储CPU计算需要用到的数据
 
-**ALU（Arithmetic & Logic Unit）运算单元**
+ALU（Arithmetic & Logic Unit）运算单元
 
-**CU（Control Unit）控制单元**
+CU（Control Unit）控制单元
 
-**MMU（Memory Management Unit）内存管理单元**
+MMU（Memory Management Unit）内存管理单元
 
 cache
 
@@ -80,9 +80,9 @@ https://www.cnblogs.com/z00377750/p/9180644.html
 
 缓存行（cache line）：目前大小多为64字节
 
-​		缓存行越大，局部性空间效率越高，但读取时间慢
+缓存行越大，局部性空间效率越高，但读取时间慢
 
-​		缓存行越小，局部性空间效率越低，但读取时间快
+缓存行越小，局部性空间效率越低，但读取时间快
 
 缓存行对齐：对于某些特别敏感的数字会存在线程高竞争的访问，为了保证不发生伪共享，就可以使用缓存行对齐的编程方式。测试代码如下：
 
@@ -145,6 +145,38 @@ public class CacheLinePadding {
 ```
 
 在JDK7中，很多都是采用long padding提高效率；在JDK8中，可以使用@Contended注解加上JVM的-XX：-RestrictContended参数。
+
+## 乱序执行
+
+https://preshing.com/20120515/memory-reordering-caught-in-the-act/
+
+### 禁止乱序
+
+CPU层面：Intel -> 原语(mfence lfence sfence) 或者锁总线
+
+JVM层级：8个hanppens-before原则 4个内存屏障 （LL LS SL SS）
+
+as-if-serial : 不管硬件什么顺序，单线程执行的结果不变，看上去像是serial
+
+## 合并写（不重要）
+
+Write Combining Buffer
+
+一般是4个字节
+
+由于ALU速度太快，所以在写入L1的同时，写入一个WC Buffer，满了之后，再直接更新到L2
+
+## NUMA
+
+Non Uniform Memory Access
+
+ZGC - NUMA aware 
+
+分配内存会优先分配该线程所在CPU的最近内存
+
+## 启动过程（不重要）
+
+通电 -> bios uefi 工作 -> 自检 -> 到硬盘固定位置加载bootloader -> 读取可配置信息 -> CMOS
 
 
 
